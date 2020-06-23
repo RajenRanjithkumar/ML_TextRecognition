@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "117189334203",
+    "firebase_url": "https://mlkit-40abc.firebaseio.com",
+    "project_id": "mlkit-40abc",
+    "storage_bucket": "mlkit-40abc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117189334203:android:a5bc8510594354b0e3459e",
+        "android_client_info": {
+          "package_name": "com.example.mlkit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "117189334203-cts4adr0l0bee187r3tea658g3mvuil9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRS3XULSzMu1V2SMeVSjyUXJb4Td2jZYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "117189334203-cts4adr0l0bee187r3tea658g3mvuil9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
