@@ -1,5 +1,7 @@
 package com.example.mlkit;
 
+import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
+import android.content.ClipboardManager;
 import com.example.mlkit.helpers.MyHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,9 +26,10 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.util.Arrays;
 
 public class mainActivity extends permissionActivity implements View.OnClickListener {
-	private Bitmap mBitmap;
-	private ImageView mImageView;
-	private TextView mTextView;
+	public Bitmap mBitmap;
+	public ImageView mImageView;
+	private TextView mTextView = null;
+	public Uri dataUri;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class mainActivity extends permissionActivity implements View.OnClickList
 		mImageView = findViewById(R.id.image_view);
 		findViewById(R.id.btn_device).setOnClickListener(this);
 		findViewById(R.id.btn_cloud).setOnClickListener(this);
+		findViewById(R.id.copyText).setOnClickListener(this);
+		mTextView.setText("");
 	}
 
 	@Override
@@ -58,12 +63,27 @@ public class mainActivity extends permissionActivity implements View.OnClickList
 				{
 					Toast.makeText(mainActivity.this,"Click or Select a picture to detect text",Toast.LENGTH_SHORT).show();
 				}
+			case R.id.copyText:
+				if (mTextView.getText() != "")
+				{
+					//to copy text to clipboard
+					ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+					ClipData clip = ClipData.newPlainText("EditText",mTextView.getText().toString());
+					clipboard.setPrimaryClip(clip);
+					clip.getDescription();
+					Toast.makeText(mainActivity.this,"Copied",Toast.LENGTH_SHORT).show();
+
+				}
+				else
+				{
+					Toast.makeText(mainActivity.this,"No text available to copy",Toast.LENGTH_SHORT).show();
+				}
 				break;
 		}
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
@@ -72,12 +92,19 @@ public class mainActivity extends permissionActivity implements View.OnClickList
 					checkStoragePermission(requestCode);
 					break;
 				case RC_SELECT_PICTURE:
-					Uri dataUri = data.getData();
+
+					dataUri = data.getData();
+					//Uri dataUri = super.resultUri;
+
+
 					String path = MyHelper.getPath(this, dataUri);
 					if (path == null) {
 						mBitmap = MyHelper.resizeImage(imageFile, this, dataUri, mImageView);
 					} else {
 						mBitmap = MyHelper.resizeImage(imageFile, path, mImageView);
+
+
+
 					}
 					if (mBitmap != null) {
 						mTextView.setText(null);
@@ -157,4 +184,14 @@ public class mainActivity extends permissionActivity implements View.OnClickList
 
 		}
 	}
+
+
+
+
+
+	/*private void setClipboard(Context context, String text) {
+		ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+		ClipData clip = android.content.ClipData.newPlainText("Copied Text", text);
+		clipboard.setPrimaryClip(clip);
+	}*/
 }

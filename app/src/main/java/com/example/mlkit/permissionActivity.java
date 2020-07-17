@@ -1,6 +1,7 @@
 package com.example.mlkit;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
@@ -13,8 +14,11 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.example.mlkit.helpers.MyHelper;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 
@@ -26,10 +30,14 @@ public class permissionActivity extends AppCompatActivity {
     public static final int RC_TAKE_PICTURE = 104;
     public static final String ACTION_BAR_TITLE = "action_bar_title";
     public File imageFile;
+    public Uri resultUri;
+    public ImageView mImageView;
+
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mImageView = findViewById(R.id.image_view);
         getMenuInflater().inflate(R.menu.action_icons, menu);
         return true;
     }
@@ -89,11 +97,11 @@ public class permissionActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+    /*@Override
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
-    }
+    }*/
 
     public static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
@@ -118,5 +126,33 @@ public class permissionActivity extends AppCompatActivity {
         Uri photo = FileProvider.getUriForFile(this, getPackageName() + ".provider", imageFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photo);
         startActivityForResult(intent, RC_TAKE_PICTURE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == RC_SELECT_PICTURE){
+                if (data != null) {
+
+                    CropImage.activity(data.getData()).setGuidelines(CropImageView.Guidelines.ON)
+                            .start(this);
+                }
+
+            }
+
+        }
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+
+                resultUri = result.getUri();
+                mImageView.setImageURI(resultUri);
+
+
+
+        }
+
+
     }
 }
